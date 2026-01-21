@@ -19,11 +19,10 @@ router.get("/:id", protect, getPostById); // GET /api/posts/:id
 // Create a new post
 router.post("/", protect, createPost); // POST /api/posts
 
-// TODO
-// Import functions implemented in postController.js that are associated with update and delete post functionalities
-// Add routes for Update and Delete functionalities
-
+// Edit a post
 router.patch("/:id", protect, updatePost)
+
+// Delete a post
 router.delete("/:id", protect, deletePost)
 
 module.exports = router;

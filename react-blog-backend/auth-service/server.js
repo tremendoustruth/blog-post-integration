@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 5001; // Use PORT from environment variables or
 
 // Middleware setup
 app.use(cors()); // Allow requests from other origins
-app.use(bodyParser.json()); // Parse incoming JSON request bodies
+app.use(express.json()); // Parse incoming JSON request bodies
 app.use(pinoHttp({ logger })); // Attach Pino logger middleware for logging HTTP requests
 
 // Mount routes

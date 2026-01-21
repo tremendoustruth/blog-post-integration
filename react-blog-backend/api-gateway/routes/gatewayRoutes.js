@@ -11,6 +11,11 @@ const router = express.Router();
 const AUTH_SERVICE_URL = process.env.AUTH_SERVICE_URL; // URL of the authentication service.
 const BLOG_SERVICE_URL = process.env.BLOG_SERVICE_URL; // URL of the blog service.
 
+router.use(async (req, res, next) => {
+  console.log(req.url);
+  next();
+})
+
 // Define a route for handling POST requests to /auth/register.
 router.post("/auth/register", async (req, res) => {
   // Use a try...catch block to handle potential errors during the request.
@@ -96,6 +101,43 @@ router.use("/posts", protect, async (req, res) => {
   // Use protect middleware to ensure only authenticated users can access
   //destructure the request object
   const { method, body, headers, originalUrl } = req;
+  console.log("url", originalUrl)
+  // console.log("Body:", body);
+  // Construct the full URL to forward the request to the Blog Service
+  const url = `${BLOG_SERVICE_URL}${originalUrl}`; // Forward to Blog Service
+  try {
+    // Log the request being forwarded
+    logger.info(`Forwarding ${method} request to Blog Service: ${url}`);
+    const response = await axios({
+      method, // HTTP method (GET, POST, PUT, DELETE, etc.)
+      url, // Constructed URL for the Blog Service
+      data: body, // Request body data
+      headers: { Authorization: headers.authorization }, // Forward the Authorization header for authentication
+    });
+    console.log("the data", response.status, response.data)
+    // Send the Blog Service's response back to the client
+    res.status(response.status).json(response.data);
+  } catch (error) {
+    // Log and handle errors during forwarding
+    // console.log(error);
+    logger.error(
+      `Error forwarding ${method} request to Blog Service: ${url}`,
+      error.message
+    );
+    res.status(error.response?.status || 500).json({
+      // Use optional chaining for error status
+      message: "Error forwarding request to Blog Service",
+      error: error.message,
+    });
+  }
+});
+
+// TODO
+// Implement /comments route to handle comment functionality
+router.use("/comments", protect, async (req, res) => {
+  // Use protect middleware to ensure only authenticated users can access
+  //destructure the request object
+  const { method, body, headers, originalUrl } = req;
   console.log("Body:", body);
   // Construct the full URL to forward the request to the Blog Service
   const url = `${BLOG_SERVICE_URL}${originalUrl}`; // Forward to Blog Service
@@ -124,9 +166,6 @@ router.use("/posts", protect, async (req, res) => {
     });
   }
 });
-
-// TODO
-// Implement /comments route to handle comment functionality
 
 // TODO
 // Implement /likes route to handle comment functionality

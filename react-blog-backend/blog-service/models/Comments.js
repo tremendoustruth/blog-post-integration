@@ -3,8 +3,8 @@ const mongoose = require("mongoose");
 const commentSchema = new mongoose.Schema(
   {
     content: { type: String, required: true }, // Comment text
-    author: { type: mongoose.Schema.Types.ObjectId, required: true }, // User who wrote the comment
-    post: { type: mongoose.Schema.Types.ObjectId, ref: "Post", required: true }, // Associated post
+    author: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }, // User who wrote the comment
+    postId: { type: mongoose.Schema.Types.ObjectId, ref: "Post", required: true }, // Associated post
   },
   { timestamps: true } // Automatically adds `createdAt` and `updatedAt` fields
 );

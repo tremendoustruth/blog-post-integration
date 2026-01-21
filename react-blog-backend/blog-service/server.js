@@ -7,6 +7,8 @@ const logger = require("./blogLogs/logger");
 
 // Import Routes
 const postRoutes = require("./routes/postRoutes");
+const commentRoutes = require("./routes/commentRoutes");
+const likeRoutes = require("./routes/likeRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 5002;
@@ -14,7 +16,7 @@ const PORT = process.env.PORT || 5002;
 // Enable Cross-Origin Resource Sharing (CORS) for the entire application.
 app.use(cors());
 
-app.use(bodyParser.json());
+app.use(express.json());
 
 // Custom middleware to log incoming requests. This middleware function will be executed for every incoming request.  Middleware functions have access to the request object (req), the response object (res), and the next function in the application’s request-response cycle.  The next function, when invoked, executes the middleware succeeding the current middleware.
 app.use((req, res, next) => {
@@ -26,6 +28,8 @@ app.use((req, res, next) => {
 
 // Routes
 app.use("/api/posts", postRoutes);
+app.use("/api", commentRoutes)
+app.use("/api/likes", likeRoutes)
 
 // MongoDB Connection
 mongoose
